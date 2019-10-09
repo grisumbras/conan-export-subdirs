@@ -1,0 +1,117 @@
+= conan-export-subdirs
+:toc: preamble
+
+[link=https://github.com/grisumbras/conan-export-subdirs/actions]
+image::https://github.com/grisumbras/conan-export-subdirs/workflows/ci/badge.svg[Build status]
+
+____
+GitHub Action that exports Conan packages in subdirectories
+____
+
+
+== Usage
+
+This action is usefull when you want to upload packages built in separate CI
+jobs. First you need to upload them as artifacts from their jobs, then you need
+to download them all, export them into Conan cache and finally upload.
+
+Example usage:
+
+[source,yaml]
+----
+build:
+  strategy:
+    matrix:
+      os: [ubuntu-latest, macOS-latest, windows-latest]
+
+  runs-on: ${{ matrix.os }}
+
+  steps:
+    - run: conan create .
+
+    - uses: grisumbras/locate-conan-package@latest
+      id: locate_package
+
+    - uses: actions/upload-artifact@v1
+      with:
+        name: artifacts-${{ matrix.os }}
+        path: ${{ steps.locate_package.outputs.path }}
+
+publish:
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/upload-artifact@v1
+      with:
+        name: artifacts-ubuntu-latest
+        path: artifacts
+
+    - uses: actions/upload-artifact@v1
+      with:
+        name: artifacts-macOS-latest
+        path: artifacts
+
+    - uses: actions/upload-artifact@v1
+      with:
+        name: artifacts-windows-latest
+        path: artifacts
+
+    - uses: grisumbras/conan-export-subdirs@latest
+      with:
+        path: artifacts
+
+----
+
+
+== Inputs
+
+=== `path`
+Path to the directory containing subdirectories with package folders to export.
+
+=== `name`
+Name of the package to export. If not specified, `name` attribute of the
+package recipe is used.
+
+=== `version`
+Version  of the package to export. If not specified, `version` attribute of the
+package recipe is used.
+
+=== `user`
+User (namespace) of the package to export. If not specified
+
+. `CONAN_USERNAME` environment variable is used, if present;
+. or `default_user` attribute of the package recipe is used, if present;
+. or the first part of the value of `GITHUB_REPOSITORY` environment variable
+  (before the slash) is used.
+
+=== `channel`
+Channel of the package to export. If not specified, the current git ref name
+is matched against _stable pattern_. If matches, the _stable channel_ is used,
+otherwise the _testing channel_ is used.
+
+Stable pattern comes from environment variable `CONAN_STABLE_BRANCH_PATTERN`
+if it's present, otherwise it is `++^(master$|release.*|stable.*)++`.
+
+Stable channel comes from environment variable `CONAN_STABLE_CHANNEL` if it's
+present, otherwise it is the string `stable`.
+
+Testing channel is either
+
+. the value of environment variable `CONAN_CHANNEL` if it's present;
+. or `default_user` attribute of the package recipe, if it's present;
+. or the string `testing`.
+
+=== `reference`
+Full reference of the package to export. If specified all inputs that specify
+parts of the reference are ignored.
+
+
+== Maintainer
+Dmitry Arkhipov <grisumbras@gmail.com>
+
+
+== Contributing
+Patches welcome!
+
+
+== License
+link:LICENSE[BSL-1.0] (C) 2019 Dmitry Arkhipov
