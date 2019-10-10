@@ -60,7 +60,7 @@ async function get_pkg_channel() {
 
     const git_ref = process.env['GITHUB_REF'].split('/', 3)[2].trim();
     const stable_pattern
-      = process.env['CONAN_STABLE_BRANCH_PATTERN'].trim()
+      = (process.env['CONAN_STABLE_BRANCH_PATTERN'] || '').trim()
       || '^(master$|release.*|stable.*)';
 
     result = git_ref.match(stable_pattern) ? stable_channel : testing_channel;
