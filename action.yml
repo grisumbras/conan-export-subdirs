@@ -1,0 +1,23 @@
+name: conan-export-subdirs
+author: Dmitry Arkhipov <grisumbras@gmail.com>
+description: Exports Conan packages in subdirectories
+branding:
+  icon: package
+  color: blue
+inputs:
+  path:
+    description: Path to parent directory
+    required: true
+  name:
+    description: Package name
+  version:
+    description: Package description
+  channel:
+    description: Package channel
+  user:
+    description: Package user
+  reference:
+    description: Full package reference
+runs:
+  using: node12
+  main: main.js
