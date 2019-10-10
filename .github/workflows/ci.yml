@@ -1,0 +1,42 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - '*'
+      - '!latest'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Pull sources
+        uses: actions/checkout@v1
+
+      - name: Configure Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '10.x'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Publish
+        if: github.event.ref == 'refs/heads/master'
+        run: |
+          remote_branch=latest
+          git checkout --orphan "$remote_branch"
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          git remote rm origin || true
+
+          remote_repo="https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git remote add origin "$remote_repo"
+
+          git add --all
+          COMMIT_MESSAGE="Automated deployment: $(date -u) $GITHUB_SHA"
+          git commit -m "$COMMIT_MESSAGE" | true
+          git push origin "$remote_branch" --force
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

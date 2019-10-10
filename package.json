@@ -1,0 +1,13 @@
+{
+  "name": "conan-export-subdirs",
+  "version": "0.2.0",
+  "description": "Exports Conan packages in subdirectories",
+  "main": "main.js",
+  "author": "Dmitry Arkhipov <grisumbras@gmail.com>",
+  "license": "BSL-1.0",
+  "dependencies": {
+    "@actions/core": "^1.1.1",
+    "@actions/exec": "^1.0.1",
+    "ini": "^1.3.5"
+  }
+}
