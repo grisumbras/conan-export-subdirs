@@ -84,20 +84,10 @@ User (namespace) of the package to export. If not specified
   (before the slash) is used.
 
 === `channel`
-Channel of the package to export. If not specified, the current git ref name
-is matched against _stable pattern_. If matches, the _stable channel_ is used,
-otherwise the _testing channel_ is used.
+Channel of the package to export. If not specified
 
-Stable pattern comes from environment variable `CONAN_STABLE_BRANCH_PATTERN`
-if it's present, otherwise it is `++^(master$|release.*|stable.*)++`.
-
-Stable channel comes from environment variable `CONAN_STABLE_CHANNEL` if it's
-present, otherwise it is the string `stable`.
-
-Testing channel is either
-
-. the value of environment variable `CONAN_CHANNEL` if it's present;
-. or `default_user` attribute of the package recipe, if it's present;
+. `CONAN_CHANNEL` environment variable is used, if present;
+. or `default_channel` attribute of the package recipe is used, if present;
 . or the string `testing`.
 
 === `reference`

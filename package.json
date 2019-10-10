@@ -1,6 +1,6 @@
 {
   "name": "conan-export-subdirs",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Exports Conan packages in subdirectories",
   "main": "main.js",
   "author": "Dmitry Arkhipov <grisumbras@gmail.com>",
