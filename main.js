@@ -77,7 +77,7 @@ function info_to_profile(input) {
     if (!allowed_sections.includes(section)) { continue; }
     destination[section] = source[section];
   }
-  return ini.encode(destination);
+  return 'include(default)\n\n' + ini.encode(destination);
 }
 
 async function run() {
